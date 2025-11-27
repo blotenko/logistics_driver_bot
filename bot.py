@@ -7,6 +7,8 @@ from telegram.ext import ContextTypes
 from crud import list_drivers, get_assignments_for_driver, get_assignments_for_date
 from config import TELEGRAM_BOT_TOKEN
 
+from db import init_db
+init_db()
 
 def fmt(assignments):
     if not assignments:
