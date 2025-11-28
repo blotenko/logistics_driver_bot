@@ -16,6 +16,15 @@ def list_drivers() -> List[Driver]:
         )
 
 
+def list_vehicles() -> List[Vehicle]:
+    with get_session() as s:
+        return (
+            s.query(Vehicle)
+            .order_by(Vehicle.plate)
+            .all()
+        )
+
+
 def get_assignments_for_driver(
     name: str,
     d: Optional[date] = None,
@@ -52,7 +61,7 @@ def get_assignments_for_date(d: date) -> List[Assignment]:
 
 
 def create_driver(full_name: str):
-    """Создаёт водителя, если его ещё нет, и возвращает объект Driver."""
+    """Создаёт водителя, если его ещё нет."""
     full_name = full_name.strip()
     if not full_name:
         return None
@@ -70,3 +79,19 @@ def create_driver(full_name: str):
         s.add(drv)
         s.flush()
         return drv
+
+
+def create_assignment(work_date, driver_id, vehicle_id, task_type, description, manager="Система"):
+    with get_session() as s:
+        a = Assignment(
+            work_date=work_date,
+            driver_id=driver_id,
+            vehicle_id=vehicle_id,
+            task_type=task_type,
+            description=description,
+            manager=manager,
+            status="planned",
+        )
+        s.add(a)
+        s.flush()
+        return a
