@@ -10,23 +10,16 @@ from config import TELEGRAM_BOT_TOKEN
 from db import init_db
 init_db()
 
-def fmt(assignments):
-    if not assignments:
-        return "Нет записей."
-    out = []
-    for a in assignments:
-        line = f"{a.work_date} — {a.driver.full_name}: {a.task_type}"
-        parts = []
-        if a.description:
-            parts.append(a.description)
+def fmt(assigns):
+    lines = []
+    for a in assigns:
         if a.vehicle:
-            parts.append(a.vehicle.plate)
-        if a.manager:
-            parts.append(f"менеджер: {a.manager}")
-        if parts:
-            line += f" ({', '.join(parts)})"
-        out.append(line)
-    return "\n".join(out)
+            line = f"{a.driver.full_name}: {a.task_type} ({a.description}, {a.vehicle.plate}, менеджер: {a.manager})"
+        else:
+            line = f"{a.driver.full_name}: {a.task_type} ({a.description}, менеджер: {a.manager})"
+        lines.append(line)
+    return "\n".join(lines)
+
 
 
 async def start(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
